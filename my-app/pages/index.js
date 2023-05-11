@@ -15,6 +15,25 @@ export default function Home() {
 
   const Web3ModalRef = useRef();
 
+  const [ens, setENS] = useState("");
+  // Save the address of the currently connected account
+  const [address, setAddress] = useState("");
+
+  /**
+   * Sets the ENS, if the current connected address has an associated ENS or else it sets
+   * the address of the connected account
+   */
+  const setENSOrAddress = async (address, web3Provider) => {
+    // Lookup the ENS related to the given address
+    var _ens = await web3Provider.lookupAddress(address);
+    // If the address has an ENS set the ENS or else just set the address
+    if (_ens) {
+      setENS(_ens);
+    } else {
+      setAddress(address);
+    }
+  };
+
   const getProviderOrSigner=async(needSigner = false)=>{
   try {
     const provider = await Web3ModalRef.current.connect();
@@ -27,6 +46,9 @@ export default function Home() {
     }
     if(needSigner){
       const signer= web3Provider.getSigner();
+      const address = await signer.getAddress();
+      // Calls the function to set the ENS or Address
+      await setENSOrAddress(address, web3Provider);
       return signer;
     }
     return web3Provider; 
@@ -147,7 +169,6 @@ export default function Home() {
     <div>
       <Head>
         <title>Whitelist Dapp</title>
-
         <meta name="description" content="Whitelist-Dapp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -168,7 +189,7 @@ export default function Home() {
       </div>
 
       <footer className={styles.footer}>
-      <div>{ens ? ens : address}!</div>
+           <div>{ens ? ens : address}!</div>
       </footer>
     </div>
   )
