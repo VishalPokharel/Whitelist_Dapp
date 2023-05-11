@@ -15,23 +15,20 @@ export default function Home() {
 
   const Web3ModalRef = useRef();
  
-   const [ens, setENS] = useState("");
+
   // Save the address of the currently connected account
   const [address, setAddress] = useState("");
 
   /**
-   * Sets the ENS, if the current connected address has an associated ENS or else it sets
+
    * the address of the connected account
    */
-  const setENSOrAddress = async (address, web3Provider) => {
+  const setAddress = async (address, web3Provider) => {
     // Lookup the ENS related to the given address
     var _ens = await web3Provider.lookupAddress(address);
-    // If the address has an ENS set the ENS or else just set the address
-    if (_ens) {
-      setENS(_ens);
-    } else {
+
       setAddress(address);
-    }
+
   };
 
   const getProviderOrSigner=async(needSigner = false)=>{
@@ -166,7 +163,7 @@ export default function Home() {
     <div>
       <Head>
         <title>Whitelist Dapp</title>
-   <div>{ens ? ens : address}!</div>
+   <div>{address}!</div>
         <meta name="description" content="Whitelist-Dapp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
